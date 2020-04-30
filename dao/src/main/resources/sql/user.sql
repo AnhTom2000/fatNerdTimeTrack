@@ -1,0 +1,8 @@
+CREATE TABLE tb_user(
+`userid` BIGINT(20) UNSIGNED NOT NULL COMMENT '用户主键',
+`username` VARCHAR(30) NOT NULL COMMENT '用户名',
+`password` VARCHAR(30) NOT NULL COMMENT '用户密码',
+`email` VARCHAR(33) NOT NULL COMMENT '用户绑定的邮箱',
+`description` VARCHAR(255) NOT NULL COMMENT '用户描述',
+  primary key (`userid`)
+)ENGINE=InnoDB AUTO_INCREMENT=2584419330884243457 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表';

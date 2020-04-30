@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dao</module>
+        <module>service</module>
+        <module>model</module>
+        <module>commom</module>
+        <module>web</module>
+    </modules>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.github.anhTom2000</groupId>
+    <artifactId>fatnerdtimetrack</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <!--依赖版本管理-->
+    <properties>
+        <java.version>11</java.version>
+        <springboot.version>2.2.2.RELEASE</springboot.version>
+        <mybatis.version>2.1.1</mybatis.version>
+        <mysql.version>8.0.18</mysql.version>
+        <Hikari.version>3.4.2</Hikari.version>
+        <lombok.version>1.16.18</lombok.version>
+        <modules.version>0.0.1-SNAPSHOT</modules.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--依赖管理-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <!--springboot支持的jdbc      hikari数据源-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${springboot.version}</version>
+                <exclusions>
+                    <!--排除tomcat自带的数据源-->
+                    <exclusion>
+                        <groupId>org.apache.tomcat</groupId>
+                        <artifactId>tomcat-jdbc</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!--springboot热部署-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <version>${springboot.version}</version>
+                <!--设置依赖不往下传递，如果有项目依赖本项目，并且想要使用热部署，需要重新 引入依赖-->
+                <optional>true</optional>
+            </dependency>
+            <!--引入hikari数据源依赖-->
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${Hikari.version}</version>
+            </dependency>
+            <!--子工程管理-->
+            <dependency>
+                <groupId>com.github.anhTom2000</groupId>
+                <artifactId>web</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.anhTom2000</groupId>
+                <artifactId>dao</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.anhTom2000</groupId>
+                <artifactId>service</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.anhTom2000</groupId>
+                <artifactId>model</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.anhTom2000</groupId>
+                <artifactId>commom</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
+            <!--引入lombok插件依赖-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <!--子工程管理-->
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
