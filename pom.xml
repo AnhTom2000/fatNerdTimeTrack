@@ -29,6 +29,7 @@
         <Hikari.version>3.4.2</Hikari.version>
         <lombok.version>1.16.18</lombok.version>
         <modules.version>0.0.1-SNAPSHOT</modules.version>
+        <jackson.version>2.10.1</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -118,6 +119,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <!--子工程管理-->
         </dependencies>

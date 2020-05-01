@@ -16,6 +16,15 @@
             <groupId>com.github.anhTom2000</groupId>
             <artifactId>commom</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+
     </dependencies>
 
 </project>
