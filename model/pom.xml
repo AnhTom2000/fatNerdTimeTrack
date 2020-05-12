@@ -6,6 +6,7 @@
         <artifactId>fatnerdtimetrack</artifactId>
         <groupId>com.github.anhTom2000</groupId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,15 +15,15 @@
     <dependencies>
         <dependency>
             <groupId>com.github.anhTom2000</groupId>
-            <artifactId>commom</artifactId>
+            <artifactId>utils</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.10.1</version>
-            <scope>compile</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--<artifactId>jackson-databind</artifactId>-->
+            <!--<version>2.10.1</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
 
 
     </dependencies>

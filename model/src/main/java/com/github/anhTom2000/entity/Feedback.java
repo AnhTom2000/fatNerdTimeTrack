@@ -1,4 +1,4 @@
-package com.github.anhTom2000.entiy;
+package com.github.anhTom2000.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,6 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @JsonIgnoreProperties(value = {"handler"})
 public class Feedback implements Serializable {
 

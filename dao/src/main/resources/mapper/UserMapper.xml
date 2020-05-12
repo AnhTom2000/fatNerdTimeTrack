@@ -2,9 +2,55 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.anhTom2000.entiy.User">
+<mapper namespace="com.github.anhTom2000.dao.UserMapper">
 
-    <select id="e">
-        SELECT * FROM tb_user
+    <!--用户实体全属性映射-->
+    <resultMap id="userMap" type="com.github.anhTom2000.entity.User">
+        <id column="userid" property="userId" javaType="java.lang.Long"/>
+        <result column="username" property="username" javaType="java.lang.String"/>
+        <result column="password" property="password" javaType="java.lang.String"/>
+        <result column="avatar_url" property="avatarUrl" javaType="java.lang.String"/>
+        <result column="event_count" property="eventCount" javaType="java.lang.Integer"/>
+        <result column="tag_count" property="tagCount" javaType="java.lang.Integer"/>
+        <result column="event_finishedCount" property="event_finishedCount" javaType="java.lang.Integer"/>
+        <result column="email" property="email" javaType="java.lang.String"/>
+        <result column="description" property="description" javaType="java.lang.String"/>
+        <result column="createTime" property="createTime" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+    <insert id="register" useGeneratedKeys="true" parameterType="com.github.anhTom2000.entity.User">
+        INSERT INTO tb_user(`userid`,`username`,`password`,`email`,`createTime`) VALUES(#{user.userId},#{user.username},#{user.password},#{user.email},#{user.createTime});
+    </insert>
+
+    <select id="findUserById" parameterType="java.lang.Long" resultType="com.github.anhTom2000.entity.User" resultMap="userMap">
+        SELECT userid,username,password,avatar_url,password,event_count,tag_count,event_finishedCount,email,description,createTime FROM tb_user WHERE userid = #{userId};
     </select>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultType="com.github.anhTom2000.entity.User" resultMap="userMap">
+        SELECT userid,username,password,avatar_url,password,event_count,tag_count,event_finishedCount,email,description,createTime FROM tb_user WHERE username = #{username};
+    </select>
+    <!--用户总的事件数+1-->
+    <update id="updateUserEventNumber" useGeneratedKeys="true" parameterType="java.lang.Long">
+        UPDATE tb_user SET event_count=event_count+1 WHERE userid = #{userId};
+    </update>
+    <!--用户总的时间完成数+1-->
+    <update id="updateUserEventFinishedNumber" useGeneratedKeys="true" parameterType="java.lang.Long">
+        UPDATE tb_user SET event_finishedCount=event_finishedCount+1 WHERE userid = #{userId};
+    </update>
+    <!--用户总的标签数+1-->
+    <update id="updateUserTagNumber" useGeneratedKeys="true" parameterType="java.lang.Long">
+        UPDATE tb_user SET tag_count=tag_count+1 WHERE userid = #{userId};
+    </update>
+    <!--用户总的事件数-1-->
+    <update id="lessUserEventNumber" useGeneratedKeys="true" parameterType="java.lang.Long">
+        UPDATE tb_user SET event_count=event_count-1 WHERE userid = #{userId};
+    </update>
+    <!--用户总的事件完成数-1-->
+    <update id="lessUserEventFinishedNumber" useGeneratedKeys="true" parameterType="java.lang.Long">
+        UPDATE tb_user SET event_finishedCount=event_finishedCount-1 WHERE userid = #{userId};
+    </update>
+    <!--用户总的标签数-1-->
+    <update id="lessUserTagNumber" useGeneratedKeys="true" parameterType="java.lang.Long">
+        UPDATE tb_user SET tag_count=tag_count-1 WHERE userid = #{userId};
+    </update>
 </mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.anhTom2000.dao.EventMapper">
+
+    <resultMap id="eventMap" type="com.github.anhTom2000.entity.Event">
+        <id column="event_id" property="eventId"/>
+        <result column="event_title" property="eventTitle"/>
+        <result column="priority_id" property="priorityId"/>
+        <result column="finished" property="finished"/>
+        <result column="date" property="date" javaType="java.time.LocalDateTime"/>
+        <result column="endDate" property="endDate" javaType="java.time.LocalDateTime"/>
+        <result column="event_description" property="eventDescription"/>
+        <collection property="tagList" ofType="com.github.anhTom2000.entity.Tag" column="event_id"
+                    select="com.github.anhTom2000.dao.Event_TagMapper.findInMiddle">
+            <id column="tag_id" property="tagId"/>
+            <result column="tag_name" property="tagName"/>
+            <result column="tag_bgColor" property="tagBgColor"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllEventByUserId" resultMap="eventMap" resultType="java.util.List" parameterType="java.lang.Long">
+        SELECT event_id, event_title, priority_id, finished, date, endDate,event_description
+        FROM tb_event WHERE user_id = #{userId};
+    </select>
+
+    <insert id="addEvent" parameterType="com.github.anhTom2000.entity.Event" useGeneratedKeys="true"
+            keyColumn="event_id">
+        INSERT INTO tb_event
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `event_id`,`event_title`,`user_id`,`priority_id`,`finished`,
+            <if test="event.date!=null">
+                `date`
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{event.eventId},#{event.eventTitle},#{event.userId},#{event.priorityId},#{event.finished},
+            <if test="event.date!=null">
+                #{event.date},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateEventTitle" useGeneratedKeys="true">
+        UPDATE tb_event SET event_title = #{eventTitle} WHERE event_id = #{eventId};
+    </update>
+
+    <update id="updateDescription" useGeneratedKeys="true">
+        UPDATE tb_event SET event_description = #{eventDescription} WHERE event_id = #{eventId};
+    </update>
+
+    <update id="updateEventFinished" useGeneratedKeys="true">
+        UPDATE tb_event SET finished = !finished WHERE event_id = #{eventId};
+    </update>
+
+    <update id="updateEventDate" useGeneratedKeys="true">
+        UPDATE tb_event SET date =  #{date} WHERE event_id = #{eventId};
+    </update>
+
+    <update id="updateEventPriority" useGeneratedKeys="true">
+        UPDATE tb_event SET priority_id = #{priorityId} WHERE event_id = #{eventId};
+    </update>
+
+    <update id="updateEventEndTime" useGeneratedKeys="true">
+        UPDATE tb_event SET endDate = #{endTime} WHERE event_id = #{eventId};
+    </update>
+    <delete id="deleteEvent">
+        DELETE FROM tb_event WHERE event_id = #{eventId};
+    </delete>
+</mapper>

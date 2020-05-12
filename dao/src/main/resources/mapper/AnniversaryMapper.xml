@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.anhTom2000.dao.AnniversaryMapper">
+
+    <resultMap id="anniversaryMap" type="com.github.anhTom2000.entity.Anniversary">
+        <id column="anniversary_id" property="anniversaryId"/>
+        <result column="user_id" property="userId"/>
+        <result column="anniversary_title" property="anniversaryTitle"/>
+        <result column="anniversary_time" property="anniversaryTime"/>
+        <result column="anniversary_description" property="anniversaryDescription"/>
+    </resultMap>
+
+    <select id="findAllAnniversary" resultMap="anniversaryMap" parameterType="java.lang.Long">
+        SELECT anniversary_id, user_id, anniversary_title, anniversary_time, anniversary_description
+        FROM tb_anniversary
+        WHERE user_id = #{userId};
+    </select>
+
+    <insert id="insertAnniversary" useGeneratedKeys="true">
+        INSERT INTO tb_anniversary (anniversary_id,
+                                    user_id,
+                                    anniversary_title,
+                                    anniversary_time,
+                                    anniversary_description)
+        VALUES (#{anniversary.anniversaryId},
+                #{userId},
+                #{anniversary.anniversaryTitle},
+                #{anniversary.anniversaryTime},
+                #{anniversary.anniversaryDescription});
+    </insert>
+    <update id="updateAnniversary" useGeneratedKeys="true">
+        UPDATE tb_anniversary
+        SET anniversary_title       = #{anniversary.anniversaryTitle},
+            anniversary_time        = #{anniversary.anniversaryTime},
+            anniversary_description = #{anniversary.anniversaryDescription}
+        WHERE anniversary_id = #{anniversary.anniversaryId};
+    </update>
+
+    <delete id="deleteAnniversary">
+        DELETE
+        FROM tb_anniversary
+        WHERE anniversary_id = #{anniversaryId};
+    </delete>
+
+
+</mapper>

@@ -1,11 +1,13 @@
-package com.github.anhTom2000.entiy;
+package com.github.anhTom2000.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.*;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 /**
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @JsonIgnoreProperties(value = {"handler"})
 public class Anniversary implements Serializable {
 
@@ -25,18 +28,17 @@ public class Anniversary implements Serializable {
 
     // 纪念日id
     @JsonSerialize(using = ToStringSerializer.class)
-    public Long anniversaryId;
+    Long anniversaryId;
 
-    // 纪念日属于哪个用户
     @JsonSerialize(using = ToStringSerializer.class)
-    public Long userId;
+    Long userId;
 
-    // 纪念日标题
-    public String anniversaryTitle;
+    @JsonProperty(value = "anniversaryTitle")
+    String anniversaryTitle;
 
-    // 纪念日时间
-    public LocalDateTime anniversaryTime;
+    @JsonProperty(value = "anniversaryTime")
+    String anniversaryTime;
 
-    // 纪念日描述
-    public String anniversaryDescription;
+    @JsonProperty(value = "anniversaryDescription")
+    String anniversaryDescription;
 }

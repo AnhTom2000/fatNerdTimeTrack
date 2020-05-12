@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.anhTom2000.dao.Event_TagMapper">
+
+    <resultMap id="tagMap" type="com.github.anhTom2000.entity.Tag">
+        <id column="tag_id" property="tagId"/>
+        <result column="tag_name" property="tagName"/>
+        <result column="tag_bgColor" property="tagBgColor"/>
+    </resultMap>
+
+    <select id="findInMiddle" parameterType="java.lang.Long" resultType="java.util.List" resultMap="tagMap">
+        SELECT tag.tag_id, tag.tag_name, tag.tag_bgColor
+        FROM tb_tag AS tag
+                 INNER JOIN tb_event_tag_middle AS middle ON middle.tag_id = tag.tag_id
+        WHERE middle.event_id = #{eventId};
+    </select>
+
+    <insert id="insertInMiddle" useGeneratedKeys="true">
+        <if test="tagList.size>0">
+            INSERT INTO tb_event_tag_middle(event_id, tag_id) VALUES
+            <foreach item="tag" collection="tagList" index="" separator=",">
+                (#{eventId},#{tag.tagId})
+            </foreach>
+        </if>
+    </insert>
+
+    <delete id="deleteEventTag">
+        DELETE
+        FROM tb_event_tag_middle
+        WHERE tag_id = #{tagId};
+    </delete>
+</mapper>

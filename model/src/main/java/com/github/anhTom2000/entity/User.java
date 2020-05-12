@@ -1,4 +1,4 @@
-package com.github.anhTom2000.entiy;
+package com.github.anhTom2000.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -66,4 +66,6 @@ public class User implements Serializable {
 
     // 用户账户创建时间
     private LocalDateTime createTime;
+
+
 }

@@ -9,6 +9,7 @@
         <module>model</module>
         <module>commom</module>
         <module>web</module>
+        <module>utils</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -27,9 +28,12 @@
         <mybatis.version>2.1.1</mybatis.version>
         <mysql.version>8.0.18</mysql.version>
         <Hikari.version>3.4.2</Hikari.version>
-        <lombok.version>1.16.18</lombok.version>
+        <lombok.version>1.18.8</lombok.version>
         <modules.version>0.0.1-SNAPSHOT</modules.version>
         <jackson.version>2.10.1</jackson.version>
+        <redis.version>2.2.2.RELEASE</redis.version>
+        <mail.version>2.2.2.RELEASE</mail.version>
+        <commpool.version>2.5.0</commpool.version>
     </properties>
 
     <dependencyManagement>
@@ -75,12 +79,66 @@
                 <version>${springboot.version}</version>
                 <!--设置依赖不往下传递，如果有项目依赖本项目，并且想要使用热部署，需要重新 引入依赖-->
                 <optional>true</optional>
+                <scope>true</scope>
             </dependency>
             <!--引入hikari数据源依赖-->
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${Hikari.version}</version>
+            </dependency>
+
+            <!--引入lombok插件依赖-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-mail</artifactId>
+                <version>${mail.version}</version>
+            </dependency>
+            <!--&lt;!&ndash;sessions 依赖&ndash;&gt;-->
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session-data-redis</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <!--cache-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <!-- lettuce pool 缓存连接池 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commpool.version}</version>
+            </dependency>
+            <!-- jackson json 优化缓存对象序列化 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.9.6</version>
             </dependency>
             <!--子工程管理-->
             <dependency>
@@ -108,22 +166,10 @@
                 <artifactId>commom</artifactId>
                 <version>${modules.version}</version>
             </dependency>
-            <!--引入lombok插件依赖-->
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-aop</artifactId>
-                <version>${springboot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
+                <groupId>com.github.anhTom2000</groupId>
+                <artifactId>utils</artifactId>
+                <version>${modules.version}</version>
             </dependency>
             <!--子工程管理-->
         </dependencies>
@@ -134,6 +180,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <!--<addResources>true</addResources>-->
+                </configuration>
             </plugin>
         </plugins>
     </build>
