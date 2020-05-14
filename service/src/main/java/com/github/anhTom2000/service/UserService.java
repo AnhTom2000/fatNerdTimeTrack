@@ -19,15 +19,16 @@ public interface UserService {
 
     ResultDTO login(String username, String password, HttpServletRequest request, HttpServletResponse response);
 
-    Integer updateUserEventNumber(Long userId);
+    void updateUserAvator(String avator, Long userId);
+
+    ResultDTO bind(String bind, String flag, Long userId);
+
+    ResultDTO bindEmail(String checkCode,String email,Long userId);
+
+    ResultDTO changePassword(String name,String email,String checkCode,String password,Long userId);
+
 
     Integer updateUserEventFinishedNumber(Long userId);
 
-    Integer updateUserTagNumber(Long userId);
 
-    Integer lessUserEventNumber(Long userId);
-
-    Integer lessUserEventFinishedNumber(Long userId);
-
-    Integer lessUserTagNumber(Long userId);
 }

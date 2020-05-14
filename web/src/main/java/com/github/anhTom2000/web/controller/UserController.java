@@ -4,9 +4,11 @@ import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.dto.UserDTO;
 import com.github.anhTom2000.service.CookieService;
 import com.github.anhTom2000.service.UserService;
+import com.github.anhTom2000.service.VerifycationService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +41,7 @@ public class UserController {
     @Qualifier("cookieService")
     @Autowired
     private CookieService cookieService;
+
 
     @PostMapping("/register")
     public ResultDTO register(@Pattern(regexp = "^\\D+?.*$", message = "用户名不能以数字开头")
@@ -82,5 +85,47 @@ public class UserController {
     @RequestMapping("/login")
     public ResultDTO login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request, HttpServletResponse response) {
         return userService.login(username, password, request, response);
+    }
+
+    @RequestMapping("/bind")
+    public  ResultDTO bind(@RequestParam("bind") String bind,@RequestParam("flag")String flag,HttpServletRequest request){
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+        Long userId = null;
+        ResultDTO resultDTO = null;
+        if (cookie != null) {
+            HttpSession session = request.getSession();
+            if ((userId = (Long) session.getAttribute(cookie.getValue())) != null) {
+               resultDTO =  userService.bind(bind,flag,userId);
+            }
+        }
+        return resultDTO;
+    }
+
+    @RequestMapping("/bind/bindEmail")
+    public  ResultDTO bindEmail(@RequestParam("checkCode")String checkCode,String email,HttpServletRequest request){
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+        Long userId = null;
+        ResultDTO resultDTO = null;
+        if (cookie != null) {
+            HttpSession session = request.getSession();
+            if ((userId = (Long) session.getAttribute(cookie.getValue())) != null) {
+                resultDTO =  userService.bindEmail(checkCode,email,userId);
+            }
+        }
+       return  resultDTO;
+    }
+
+    @PostMapping("/changePassword")
+    public  ResultDTO changPassword(@RequestParam("name") String name,@RequestParam("email") String email,@RequestParam("checkCode") String checkCode,@RequestParam("password")String password,HttpServletRequest request){
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+        Long userId = null;
+        ResultDTO resultDTO = null;
+        if (cookie != null) {
+            HttpSession session = request.getSession();
+            if ((userId = (Long) session.getAttribute(cookie.getValue())) != null) {
+                resultDTO =  userService.changePassword(name,email,checkCode,password,userId);
+            }
+        }
+        return resultDTO;
     }
 }

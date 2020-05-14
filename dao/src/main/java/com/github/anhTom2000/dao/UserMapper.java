@@ -21,15 +21,15 @@ public interface UserMapper {
 
     User findUserByName(@Param("username") String username);
 
-    Integer updateUserEventNumber(@Param("userId") Long userId);
+    User findUserByNameAndId(@Param("userId") Long userId, @Param("userName") String username);
+
+    Integer changePassword(@Param("password") String password, @Param("userId") Long userId);
 
     Integer updateUserEventFinishedNumber(@Param("userId") Long userId);
 
-    Integer updateUserTagNumber(@Param("userId") Long userId);
+    Integer updateUserAvator(@Param("avator") String avator, @Param("userId") Long userId);
 
-    Integer lessUserEventNumber(@Param("userId")Long userId);
+    Integer bind(@Param("phone") String phone, @Param("qq") String qq, @Param("description") String description, @Param("userId") Long userId);
 
-    Integer lessUserEventFinishedNumber(@Param("userId") Long userId);
-
-    Integer lessUserTagNumber(@Param("userId") Long userId);
+    Integer bindEmail(@Param("email") String email, Long userId);
 }

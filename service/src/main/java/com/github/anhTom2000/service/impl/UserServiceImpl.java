@@ -90,32 +90,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer updateUserEventNumber(Long userId) {
-        return userMapper.updateUserEventNumber(userId);
+    public void updateUserAvator(String avator, Long userId) {
+        userMapper.updateUserAvator(avator, userId);
     }
+
+    @Override
+    public ResultDTO bind(String bind, String flag, Long userId) {
+        ResultDTO resultDTO = ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("绑定成功").status(true).build();
+        switch (flag) {
+            case "phone":
+                userMapper.bind(bind, null, null, userId);
+                break;
+            case "qq":
+                userMapper.bind(null, bind, null, userId);
+                break;
+            case "description":
+                userMapper.bind(null, null, bind, userId);
+                break;
+        }
+        return resultDTO;
+    }
+
+    @Override
+    public ResultDTO bindEmail(String checkCode, String email, Long userId) {
+        ResultDTO resultDTO = verifycationService.checkEmailVerifyCode(email, checkCode);
+        if (resultDTO.isStatus()) {
+            userMapper.bindEmail(email, userId);
+        }
+        return resultDTO;
+    }
+
+    @Override
+    public ResultDTO changePassword(String name, String email, String checkCode, String password, Long userId) {
+        ResultDTO resultDTO = verifycationService.checkEmailVerifyCode(email, checkCode);
+        if (resultDTO.isStatus()) {
+            User user = userMapper.findUserByNameAndId(userId, name);
+            if (user != null) {
+                userMapper.changePassword(password, userId);
+            } else {
+                resultDTO.setCode(Httpcode.CLIENT_ERROR_CODE.getCode());
+                resultDTO.setMessage("找不到此用户");
+                resultDTO.setStatus(false);
+            }
+        }
+        return resultDTO;
+    }
+
 
     @Override
     public Integer updateUserEventFinishedNumber(Long userId) {
         return userMapper.updateUserEventFinishedNumber(userId);
     }
 
-    @Override
-    public Integer updateUserTagNumber(Long userId) {
-        return userMapper.updateUserTagNumber(userId);
-    }
 
-    @Override
-    public Integer lessUserEventNumber(Long userId) {
-        return userMapper.lessUserEventNumber(userId);
-    }
-
-    @Override
-    public Integer lessUserEventFinishedNumber(Long userId) {
-        return userMapper.lessUserEventFinishedNumber(userId);
-    }
-
-    @Override
-    public Integer lessUserTagNumber(Long userId) {
-        return userMapper.lessUserTagNumber(userId);
-    }
 }

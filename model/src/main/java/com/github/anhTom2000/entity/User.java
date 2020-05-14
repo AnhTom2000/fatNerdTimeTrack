@@ -61,7 +61,14 @@ public class User implements Serializable {
     @Length(max = 32,message = "邮箱不能超过32位")
     private String email;
 
+
+    @Length(max = 11,message = "手机号不能超过11位")
+    private String phone;
+
+    private String qq;
+
     // 用户自我描述
+    @Length(max = 255,message = "自我描述不能超过255位")
     private String description;
 
     // 用户账户创建时间

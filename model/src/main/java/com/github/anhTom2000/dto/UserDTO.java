@@ -1,7 +1,6 @@
 package com.github.anhTom2000.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.*;
@@ -52,6 +51,10 @@ public class UserDTO implements Serializable {
     // 用户绑定的邮箱
     private String email;
 
+    private String phone;
+
+
+    private String qq;
     // 用户自我描述
     private String description;
 
