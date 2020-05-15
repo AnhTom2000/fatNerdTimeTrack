@@ -35,6 +35,7 @@ public class CookieServiceImpl implements CookieService {
         return cookie;
     }
 
+
     @Override
     public void removeCookie(Cookie cookie, HttpServletResponse response) {
         if (cookie != null) {

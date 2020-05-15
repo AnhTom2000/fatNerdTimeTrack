@@ -1,8 +1,10 @@
 package com.github.anhTom2000.web.controller;
 
+import com.github.anhTom2000.annotation.Action;
 import com.github.anhTom2000.dto.EventDTO;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.entity.Event;
+import com.github.anhTom2000.exceptions.UnLoginException;
 import com.github.anhTom2000.service.CookieService;
 import com.github.anhTom2000.service.EventService;
 import com.github.anhTom2000.utils.httpcode.Httpcode;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -47,51 +50,50 @@ public class EventController {
                 event.setUserId(userId);
                 result = eventService.addEvent(event);
             }
-        }
+        } else throw new UnLoginException("请先登录");
         return result;
     }
 
+    @Action("getEvent")
     @RequestMapping("/getEvent")
     public List<EventDTO> getEvent(HttpServletRequest request) {
-        Long userId = null;
-        Cookie cookie = null;
-        List<EventDTO> event = null;
-        if ((cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request)) != null) {
-            if ((userId = (Long) request.getSession().getAttribute(cookie.getValue())) != null) {
-                event = eventService.getEvent(userId);
-            }
-        }
-        System.out.println(event);
-        return event;
+        Long userId = (Long) request.getSession().getAttribute(cookieService.getCookie(COOKIE_SEESION_KEY, request).getValue());
+        return eventService.getEvent(userId);
     }
 
+    @Action("updateEventDes")
     @RequestMapping("/updateEventDescription")
     public ResultDTO updateEventDescription(@RequestParam("eventDescription") String description, @RequestParam("eventId") Long eventId) {
         return eventService.updateDescription(description, eventId);
     }
 
+    @Action("updateEventTitle")
     @RequestMapping("/updateEventTitle")
     public ResultDTO updateEventTitle(@RequestParam("eventTitle") String eventTitle, @RequestParam("eventId") Long eventId) {
         return eventService.updateEventTitle(eventTitle, eventId);
     }
 
+    @Action("updateEventFinished")
     @RequestMapping("/updateEventFinished")
     public ResultDTO updateEventFinished(@RequestParam("eventId") Long eventId) {
         return eventService.updateEventFinished(eventId);
     }
 
+    @Action("updateEventDate")
     @RequestMapping("/updateEventDate")
-    public ResultDTO updateEventDate(@RequestParam("date")LocalDateTime date, @RequestParam("eventId") Long eventId) {
+    public ResultDTO updateEventDate(@RequestParam("date") LocalDateTime date, @RequestParam("eventId") Long eventId) {
         return eventService.updateEventDate(date, eventId);
     }
 
+    @Action("updateEventPriority")
     @RequestMapping("/updateEventPriority")
     public ResultDTO updateEventPriority(@RequestParam("priorityId") Integer priorityId, @RequestParam("eventId") Long eventId) {
         return eventService.updateEventPriority(priorityId, eventId);
     }
 
+    @Action("deleteEvent")
     @RequestMapping("deleteEvent")
-    public ResultDTO deleteEvent(@RequestParam("eventId") Long eventId){
+    public ResultDTO deleteEvent(@RequestParam("eventId") Long eventId) {
         return eventService.deleteEvent(eventId);
     }
 

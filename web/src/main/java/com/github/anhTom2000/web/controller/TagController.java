@@ -1,5 +1,6 @@
 package com.github.anhTom2000.web.controller;
 
+import com.github.anhTom2000.annotation.Action;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.dto.TagDTO;
 import com.github.anhTom2000.entity.Tag;
@@ -31,6 +32,7 @@ public class TagController {
     @Autowired
     private CookieService cookieService;
 
+    @Action("addTag")
     @PostMapping("/addTag")
     public TagDTO addTag(@RequestBody Tag tag,HttpServletRequest request){
         System.out.println(tag);
@@ -45,6 +47,7 @@ public class TagController {
         return tagDTO;
     }
 
+    @Action("findAll")
     @RequestMapping("/findAll")
     public List<TagDTO> findAllTag(HttpServletRequest request){
         Cookie cookie = null;
@@ -58,11 +61,13 @@ public class TagController {
         return tag;
     }
 
+    @Action("updateTagColor")
     @RequestMapping("/updateTagColor")
     public ResultDTO updateTagColor(@RequestParam("color") String color,@RequestParam("tagId")Long tagId){
         return tagService.updateTagColor(color, tagId);
     }
 
+    @Action("updateTagName")
     @RequestMapping("/updateTagName")
     public ResultDTO updateTagName(@RequestParam("tagName") String tagName,@RequestParam("tagId")Long tagId){
         return tagService.updateTagName(tagName, tagId);

@@ -1,20 +1,21 @@
 package com.github.anhTom2000.web.controller;
 
+import com.github.anhTom2000.annotation.Action;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.dto.UserDTO;
-import com.github.anhTom2000.service.CookieService;
-import com.github.anhTom2000.service.Event_TagService;
-import com.github.anhTom2000.service.UploadService;
-import com.github.anhTom2000.service.VerifycationService;
+import com.github.anhTom2000.service.*;
+import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -47,7 +48,12 @@ public class CommonApiController {
     @Autowired
     private CookieService cookieService;
 
-    @CrossOrigin
+    @Lazy
+    @Qualifier("userService")
+    @Autowired
+    private UserService userService;
+
+
     @RequestMapping("/send/email/checkCode")
     public ResultDTO sendVerification(
             @NotBlank(message = "邮箱不能为空")
@@ -57,22 +63,35 @@ public class CommonApiController {
         return verifycationService.sendEmailWithVerifyCode(email);
     }
 
+    @Action("DeleteEventTag")
     @RequestMapping("/update/tag/deleteEventTag")
-    public ResultDTO DeleteEventTag(@RequestParam("tagId") Long tagId ){
+    public ResultDTO DeleteEventTag(@RequestParam("tagId") Long tagId) {
         return event_tagService.deleteInMiddle(tagId);
     }
 
-    @RequestMapping(value = "/update/user/updateUserAvator",method = RequestMethod.POST)
-    public ResultDTO updateUserAvator(@RequestParam("file") MultipartFile file, HttpServletRequest request){
-        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+    @Action("updateUserAvator")
+    @RequestMapping(value = "/update/user/updateUserAvator", method = RequestMethod.POST)
+    public ResultDTO updateUserAvator(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request);
         Long userId = null;
         UserDTO userDTO = null;
-        if (cookie != null) {
-            HttpSession session = request.getSession();
-            if ((userId = (Long) session.getAttribute(cookie.getValue())) != null) {
-                return uploadService.uploadUserAvator(userId,file,request);
-            }
-        }
-      return null;
+        HttpSession session = request.getSession();
+        return uploadService.uploadUserAvator((Long) session.getAttribute(cookie.getValue()), file, request);
+    }
+
+
+    @RequestMapping("/check/findUser")
+    public ResultDTO findUser(
+            @NotBlank(message = "用户名不能为空")
+            @Length(max = 30, message = "用户名不能超过30个字符")
+            @RequestParam("name") String name
+    ) {
+        return userService.findUser(name);
+    }
+
+    @RequestMapping("/exit/userExit")
+    public ResultDTO exit(HttpServletRequest request, HttpServletResponse response) {
+        cookieService.removeCookie(cookieService.getCookie(COOKIE_SEESION_KEY, request), response);
+        return ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message(null).status(true).build();
     }
 }

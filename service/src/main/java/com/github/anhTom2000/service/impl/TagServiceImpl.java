@@ -12,6 +12,9 @@ import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class TagServiceImpl implements TagService {
 
     private final IdGenerator idGenerator = SnowflakeIdGenerator.getInstance();
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public TagDTO addTag(Tag tag, Long userId) {
         tag.setTagId(idGenerator.generateId());
@@ -42,18 +46,21 @@ public class TagServiceImpl implements TagService {
         return tag.size() > 0 ? BeanConvertUtil.convertList(tag, TagDTO.class) : new ArrayList<TagDTO>();
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateTagName(String tagName, Long tagId) {
         return tagMapper.updateTagName(tagName, tagId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(),"修改成功",true) : new ResultDTO(Httpcode.SERVER_ERROR_CODE.getCode(),"服务器错误",false) ;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateTagColor(String tagColor, Long tagId) {
         return tagMapper.updateTagColor(tagColor, tagId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(),"修改成功",true) : new ResultDTO(Httpcode.SERVER_ERROR_CODE.getCode(),"服务器错误",false) ;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO deleteTag(Long tagId) {
-        return null;
+        return tagMapper.deleteTag(tagId) > 0 ? ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("删除成功").status(true).build() : ResultDTO.builder().code(Httpcode.CLIENT_ERROR_CODE.getCode()).message(null).status(false).build();
     }
 }

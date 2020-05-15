@@ -25,10 +25,10 @@ public interface UserService {
 
     ResultDTO bindEmail(String checkCode,String email,Long userId);
 
-    ResultDTO changePassword(String name,String email,String checkCode,String password,Long userId);
+    ResultDTO changePassword(String name,String email,String checkCode,String password);
 
 
-    Integer updateUserEventFinishedNumber(Long userId);
+    ResultDTO findUser(String name);
 
 
 }

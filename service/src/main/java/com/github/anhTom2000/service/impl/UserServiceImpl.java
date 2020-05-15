@@ -12,8 +12,12 @@ import com.github.anhTom2000.utils.Generator.IdGenerator;
 import com.github.anhTom2000.utils.Generator.impl.SnowflakeIdGenerator;
 import com.github.anhTom2000.utils.encryptUtils.EncryptUtil;
 import com.github.anhTom2000.utils.httpcode.Httpcode;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +50,7 @@ public class UserServiceImpl implements UserService {
 
     private final IdGenerator idGenerator = SnowflakeIdGenerator.getInstance();
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO register(String username, String password, String email, String verification, HttpServletRequest request, HttpServletResponse response) {
         ResultDTO dto = verifycationService.checkEmailVerifyCode(email, verification);
@@ -70,47 +75,61 @@ public class UserServiceImpl implements UserService {
         return user == null ? null : BeanConvertUtil.create(user, UserDTO.class);
     }
 
+
     @Override
     public ResultDTO login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
-        User user = userMapper.findUserByName(username);
         ResultDTO result = null;
-        if (user != null) {
-            if (!Objects.isNull(username) && !Objects.isNull(password)) {
-                if (EncryptUtil.verify(password, user.getPassword())) {
-                    Cookie cookie = cookieService.generateRandomCookie(COOKIE_SEESION_KEY);
-                    HttpSession session = request.getSession();
-                    session.setAttribute(cookie.getValue(), user.getUserId());
-                    session.setMaxInactiveInterval(TimeOut);
-                    response.addCookie(cookie);
-                    result = new ResultDTO(Httpcode.OK_CODE.getCode(), "登陆成功", true);
-                } else result = new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "密码错误", false);
-            } else result = new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "账号或密码不能为空", false);
-        } else result = new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "账号不存在", false);
+        try {
+            User user = userMapper.findUserByName(username);
+            if (user == null) throw new NotFoundException("账号不存在");
+            if (Objects.isNull(username) && Objects.isNull(password)) {
+                throw new NullPointerException("账号或密码不能为空");
+            }
+            if (EncryptUtil.verify(password, user.getPassword())) {
+                Cookie cookie = cookieService.generateRandomCookie(COOKIE_SEESION_KEY);
+                HttpSession session = request.getSession();
+                session.setAttribute(cookie.getValue(), user.getUserId());
+                session.setMaxInactiveInterval(TimeOut);
+                response.addCookie(cookie);
+                result = new ResultDTO(Httpcode.OK_CODE.getCode(), "登陆成功", true);
+            } else result = new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "密码错误", false);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public void updateUserAvator(String avator, Long userId) {
         userMapper.updateUserAvator(avator, userId);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO bind(String bind, String flag, Long userId) {
-        ResultDTO resultDTO = ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("绑定成功").status(true).build();
-        switch (flag) {
-            case "phone":
-                userMapper.bind(bind, null, null, userId);
-                break;
-            case "qq":
-                userMapper.bind(null, bind, null, userId);
-                break;
-            case "description":
-                userMapper.bind(null, null, bind, userId);
-                break;
+        ResultDTO resultDTO = null;
+        try {
+            if (flag == null) throw new NotFoundException("未找到要绑定的标识");
+            resultDTO = ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("绑定成功").status(true).build();
+            switch (flag) {
+                case "phone":
+                    userMapper.bind(bind, null, null, userId);
+                    break;
+                case "qq":
+                    userMapper.bind(null, bind, null, userId);
+                    break;
+                case "description":
+                    userMapper.bind(null, null, bind, userId);
+                    break;
+            }
+        } catch (NotFoundException e) {
+            e.printStackTrace();
         }
         return resultDTO;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO bindEmail(String checkCode, String email, Long userId) {
         ResultDTO resultDTO = verifycationService.checkEmailVerifyCode(email, checkCode);
@@ -120,13 +139,14 @@ public class UserServiceImpl implements UserService {
         return resultDTO;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
-    public ResultDTO changePassword(String name, String email, String checkCode, String password, Long userId) {
+    public ResultDTO changePassword(String name, String email, String checkCode, String password) {
         ResultDTO resultDTO = verifycationService.checkEmailVerifyCode(email, checkCode);
         if (resultDTO.isStatus()) {
-            User user = userMapper.findUserByNameAndId(userId, name);
+            User user = userMapper.findUserByNameAndEmail(email, name);
             if (user != null) {
-                userMapper.changePassword(password, userId);
+                userMapper.changePassword(EncryptUtil.generate(password), user.getUserId());
             } else {
                 resultDTO.setCode(Httpcode.CLIENT_ERROR_CODE.getCode());
                 resultDTO.setMessage("找不到此用户");
@@ -136,10 +156,9 @@ public class UserServiceImpl implements UserService {
         return resultDTO;
     }
 
-
     @Override
-    public Integer updateUserEventFinishedNumber(Long userId) {
-        return userMapper.updateUserEventFinishedNumber(userId);
+    public ResultDTO findUser(String name) {
+        return userMapper.findUserByName(name) != null ? ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("账号已注册").status(true).build() : ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message(null).status(false).build();
     }
 
 

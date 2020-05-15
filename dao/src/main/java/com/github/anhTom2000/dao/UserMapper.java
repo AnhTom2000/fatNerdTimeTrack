@@ -21,7 +21,7 @@ public interface UserMapper {
 
     User findUserByName(@Param("username") String username);
 
-    User findUserByNameAndId(@Param("userId") Long userId, @Param("userName") String username);
+    User findUserByNameAndEmail(@Param("email") String email,@Param("username")String username);
 
     Integer changePassword(@Param("password") String password, @Param("userId") Long userId);
 

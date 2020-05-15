@@ -63,7 +63,7 @@
     <update id="changePassword" useGeneratedKeys="true">
         UPDATE tb_user SET password = #{password} WHERE userid = #{userId};
     </update>
-    <select id="findUserByNameAndId" resultMap="userMap" resultType="com.github.anhTom2000.entity.User">
+    <select id="findUserByNameAndEmail" resultMap="userMap" resultType="com.github.anhTom2000.entity.User">
       SELECT userid,
              username,
              avatar_url,
@@ -74,7 +74,7 @@
              email,
              description,
              createTime
-        FROM tb_user WHERE userid = #{userId} AND username = #{userName};
+        FROM tb_user WHERE email = #{email} AND username = #{username};
     </select>
     <update id="updateUserAvator" useGeneratedKeys="true">
         UPDATE tb_user

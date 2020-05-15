@@ -1,5 +1,6 @@
 package com.github.anhTom2000.web.controller;
 
+import com.github.anhTom2000.annotation.Action;
 import com.github.anhTom2000.dto.AnniversaryDTO;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.entity.Anniversary;
@@ -35,36 +36,30 @@ public class AnniversaryController {
     @Autowired
     private CookieService cookieService;
 
+    @Action("findAllAnniversary")
     @RequestMapping("/findAllAnniversary")
     public List<AnniversaryDTO> getAllAnniversary(HttpServletRequest request) {
-        Cookie cookie;
-        Long userId;
-        List<AnniversaryDTO> anniversaryDTOList= null;
-        if ((cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request)) != null) {
-            anniversaryDTOList = anniversaryService.findAllAnniversary((Long) request.getSession().getAttribute(cookie.getValue()));
-        }
+
+        List<AnniversaryDTO> anniversaryDTOList = null;
+        anniversaryDTOList = anniversaryService.findAllAnniversary((Long) request.getSession().getAttribute(cookieService.getCookie(COOKIE_SEESION_KEY,request).getValue()));
         return anniversaryDTOList;
     }
 
+    @Action("insertAnniversary")
     @RequestMapping("/insertAnniversary")
-    public AnniversaryDTO insertAnniversary(@RequestBody Anniversary anniversary,HttpServletRequest request){
-        Cookie cookie;
-        System.out.println(anniversary);
-      AnniversaryDTO resultDTO = null;
-        if ((cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request)) != null) {
-            resultDTO = anniversaryService.insertAnniversary(anniversary,(Long) request.getSession().getAttribute(cookie.getValue()));
-        }
-        return resultDTO;
+    public AnniversaryDTO insertAnniversary(@RequestBody Anniversary anniversary, HttpServletRequest request) {
+        return anniversaryService.insertAnniversary(anniversary, (Long) request.getSession().getAttribute((String) request.getSession().getAttribute(cookieService.getCookie(COOKIE_SEESION_KEY, request).getValue())));
     }
 
+    @Action("updateAnniversary")
     @RequestMapping("/updateAnniversary")
-    public ResultDTO updateAnniversary(@RequestBody Anniversary anniversary){
+    public ResultDTO updateAnniversary(@RequestBody Anniversary anniversary) {
         return anniversaryService.updateAnniversary(anniversary);
     }
 
-
+    @Action("deleteAnniversary")
     @RequestMapping("/deleteAnniversary")
-    public ResultDTO deleteAnniversary(@RequestParam("anniversaryId") Long anniversaryId){
+    public ResultDTO deleteAnniversary(@RequestParam("anniversaryId") Long anniversaryId) {
         return anniversaryService.deleteAnniversary(anniversaryId);
     }
 }

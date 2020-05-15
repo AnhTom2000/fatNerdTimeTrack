@@ -14,6 +14,9 @@ import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -37,10 +40,8 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private Event_TagService event_tagService;
 
-    @Qualifier("userService")
-    @Autowired
-    private UserService userService;
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public EventDTO addEvent(Event event) {
         event.setEventId(idGenerator.generateId());
@@ -48,37 +49,44 @@ public class EventServiceImpl implements EventService {
         return eventMapper.addEvent(event) > 0 ? BeanConvertUtil.create(event, EventDTO.class) : null;
     }
 
+
     @Override
     public List<EventDTO> getEvent(Long userId) {
         List<Event> events = eventMapper.findAllEventByUserId(userId);
         return events.size() < 1 ? new ArrayList<EventDTO>() : BeanConvertUtil.convertList(events, EventDTO.class);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateEventTitle(String eventTitle, Long eventId) {
         return eventMapper.updateEventTitle(eventId, eventTitle) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(), "修改成功", true) : new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "失败", false);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateDescription(String description, Long eventId) {
         return eventMapper.updateDescription(description, eventId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(), "修改成功", true) : new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "失败", false);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateEventFinished(Long eventId) {
         return eventMapper.updateEventFinished(eventId) > 0 && eventMapper.updateEventEndTime(LocalDateTime.now(Clock.systemDefaultZone()), eventId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(), "修改成功", true) : new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "失败", false);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateEventDate(LocalDateTime date, Long eventId) {
         return eventMapper.updateEventDate(date, eventId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(), "修改成功", true) : new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "失败", false);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateEventPriority(Integer priorityId, Long eventId) {
         return eventMapper.updateEventPriority(priorityId, eventId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(), "修改成功", true) : new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "失败", false);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO deleteEvent(Long eventId) {
         eventMapper.deleteEvent(eventId);

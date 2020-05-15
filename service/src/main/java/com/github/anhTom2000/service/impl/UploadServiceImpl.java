@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,11 +31,11 @@ public class UploadServiceImpl implements UploadService {
     @Value("${uploadPath_user}")
     private String path;
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO uploadUserAvator(Long userId, MultipartFile file, HttpServletRequest request) {
 
         String upload = UploadUtil.upload(file, path);
-        System.out.println(upload);
         userService.updateUserAvator(upload,userId);
         return ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message(upload).status(true).build();
     }

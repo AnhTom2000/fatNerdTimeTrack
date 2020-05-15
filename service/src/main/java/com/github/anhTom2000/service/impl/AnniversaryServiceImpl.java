@@ -12,6 +12,9 @@ import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,18 +38,21 @@ public class AnniversaryServiceImpl implements AnniversaryService {
         return anniversary.size() > 0 ? BeanConvertUtil.convertList(anniversary, AnniversaryDTO.class) : null;
     }
 
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public AnniversaryDTO insertAnniversary(Anniversary anniversary, Long userId) {
         anniversary.setAnniversaryId(idGenerator.generateId());
         return anniversaryMapper.insertAnniversary(anniversary, userId) > 0 ? BeanConvertUtil.create(anniversary, AnniversaryDTO.class) : null;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO updateAnniversary(Anniversary anniversary) {
         return anniversaryMapper.updateAnniversary(anniversary) > 0 ? ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("成功").status(true).build() : ResultDTO.builder().code(Httpcode.CLIENT_ERROR_CODE.getCode()).message("错误").status(false).build();
     }
 
-
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
     public ResultDTO deleteAnniversary(Long anniversaryId) {
         anniversaryMapper.deleteAnniversary(anniversaryId);

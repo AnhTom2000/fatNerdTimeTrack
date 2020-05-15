@@ -1,8 +1,4 @@
 package com.github.anhTom2000.utils.encryptUtils;
-
-import sun.misc.BASE64Encoder;
-
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
