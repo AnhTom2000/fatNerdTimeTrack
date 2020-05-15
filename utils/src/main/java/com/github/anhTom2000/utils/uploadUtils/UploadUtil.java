@@ -25,12 +25,6 @@ import java.io.IOException;
 public class UploadUtil {
 
 
-    private static final String secretid = "AKID8A3mKgxrlU1Rf2FJMMAnHajg9TalRiRy";
-
-
-    private static final String secretkey = "TK2Ys0zmT3HNHzZyBD5jEWcWHpFTs8D6";
-
-
     private static final IdGenerator ID_GENERATOR = SnowflakeIdGenerator.getInstance();
 
     public static final String COS_URL = "https://weleness-1300955279.cos.ap-guangzhou.myqcloud.com/cdn/timeTrack/";
