@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.sun.org.apache.bcel.internal.generic.FADD;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
@@ -35,6 +36,7 @@ public class Event implements Serializable {
 
     // 事件标题
     @JsonProperty(value = "eventTitle")
+    @NotBlank(message = "标题不能为空")
     private String eventTitle;
 
     // 事件描述

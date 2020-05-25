@@ -41,6 +41,7 @@
 
     <dependencyManagement>
         <dependencies>
+
             <!--依赖管理-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

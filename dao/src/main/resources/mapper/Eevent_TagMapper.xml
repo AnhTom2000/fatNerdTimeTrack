@@ -31,4 +31,11 @@
         FROM tb_event_tag_middle
         WHERE tag_id = #{tagId};
     </delete>
+
+    <delete id="deleteOneEventTag">
+        DELETE  FROM  tb_event_tag_middle WHERE event_id = #{eventId} AND tag_id = #{tagId};
+    </delete>
+    <delete id="deleteTag" >
+        DELETE FROM tb_event_tag_middle WHERE event_id = #{eventId};
+    </delete>
 </mapper>

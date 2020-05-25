@@ -17,15 +17,16 @@
             <groupId>com.github.anhTom2000</groupId>
             <artifactId>utils</artifactId>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-databind</artifactId>-->
-            <!--<version>2.10.1</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,6 +1,8 @@
 package com.github.anhTom2000.service.impl;
 
+import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.service.EmailService;
+import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -32,6 +34,10 @@ public class EmailServiceImpl implements EmailService {
             + "<h3>您的验证码是&nbsp;%s,请在120秒内完成操作</h3>\n"
             + "</body>\n" + "</html>";
 
+    @Value("${mail.from}")
+    private String myself;
+
+
     @Override
     public void sendHtmlMail(String to, String verifyCode) {
         MimeMessage message = mailSender.createMimeMessage();
@@ -45,5 +51,25 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public ResultDTO sendFeedback(String type, String feedbackContent) {
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            String content = "<html>\n" + "<body>\n"
+                    + "<h3>类型："+type+"</h3>\n"
+                    + "<h3>内容："+feedbackContent+"</h3>\n"
+                    + "</body>\n" + "</html>";
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(from);
+            helper.setTo(from);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("发送成功").status(true).build();
     }
 }

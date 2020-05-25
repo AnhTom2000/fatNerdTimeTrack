@@ -56,12 +56,12 @@ public class LoginAop {
         Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request);
         ResultDTO result = null;
         if (cookie == null) {
-            result = ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("请先登陆").status(false).build();
+            result = ResultDTO.builder().code(Httpcode.CLIENT_ERROR_CODE.getCode()).message("请先登陆").status(false).build();
         } else {
             HttpSession session = request.getSession();
             if ((session.getAttribute(cookie.getValue())) == null) {
                 //if(pjp.getSignature())
-                result = ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message("请先登陆").status(false).build();
+                result = ResultDTO.builder().code(Httpcode.CLIENT_ERROR_CODE.getCode()).message("请先登陆").status(false).build();
             } else {
                 return pjp.proceed(args);
             }

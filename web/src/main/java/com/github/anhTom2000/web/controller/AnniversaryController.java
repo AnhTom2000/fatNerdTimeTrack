@@ -8,6 +8,7 @@ import com.github.anhTom2000.service.AnniversaryService;
 import com.github.anhTom2000.service.CookieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.sql.Date;
 import java.util.List;
 
@@ -47,13 +49,15 @@ public class AnniversaryController {
 
     @Action("insertAnniversary")
     @RequestMapping("/insertAnniversary")
-    public AnniversaryDTO insertAnniversary(@RequestBody Anniversary anniversary, HttpServletRequest request) {
-        return anniversaryService.insertAnniversary(anniversary, (Long) request.getSession().getAttribute((String) request.getSession().getAttribute(cookieService.getCookie(COOKIE_SEESION_KEY, request).getValue())));
+    public AnniversaryDTO insertAnniversary(@Validated @RequestBody  Anniversary anniversary, HttpServletRequest request) {
+       Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+       Long userId = (Long) request.getSession().getAttribute(cookie.getValue());
+        return anniversaryService.insertAnniversary(anniversary, userId);
     }
 
     @Action("updateAnniversary")
     @RequestMapping("/updateAnniversary")
-    public ResultDTO updateAnniversary(@RequestBody Anniversary anniversary) {
+    public ResultDTO updateAnniversary(@RequestBody @Validated Anniversary anniversary) {
         return anniversaryService.updateAnniversary(anniversary);
     }
 

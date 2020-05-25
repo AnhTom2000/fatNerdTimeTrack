@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.github.anhTom2000.config.redis.RestTemplateConfig.COOKIE_SEESION_KEY;
+
 /**
  * @Description : TODO
  * @Author : Weleness
@@ -34,42 +37,30 @@ public class TagController {
 
     @Action("addTag")
     @PostMapping("/addTag")
-    public TagDTO addTag(@RequestBody Tag tag,HttpServletRequest request){
-        System.out.println(tag);
-        Cookie cookie = null;
-        Long userId = null;
-        TagDTO tagDTO =null;
-        if((cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request))!=null){
-            if((userId = (Long) request.getSession().getAttribute(cookie.getValue()))!=null){
-                tagDTO = tagService.addTag(tag,userId);
-            }
-        }
-        return tagDTO;
+    public TagDTO addTag(@RequestBody @Valid Tag tag, HttpServletRequest request, HttpSession session) {
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request);
+        Long userId = (Long) session.getAttribute(cookie.getValue());
+        return tagService.addTag(tag, userId);
     }
 
     @Action("findAll")
     @RequestMapping("/findAll")
-    public List<TagDTO> findAllTag(HttpServletRequest request){
-        Cookie cookie = null;
+    public List<TagDTO> findAllTag(HttpServletRequest request,HttpSession session) {
         Long userId = null;
-        List<TagDTO> tag = null;
-        if((cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request))!=null){
-            if((userId = (Long) request.getSession().getAttribute(cookie.getValue()))!=null){
-                 tag= tagService.findAllTag(userId);
-            }
-        }
-        return tag;
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+        userId = (Long) session.getAttribute(cookie.getValue());
+        return tagService.findAllTag(userId);
     }
 
     @Action("updateTagColor")
     @RequestMapping("/updateTagColor")
-    public ResultDTO updateTagColor(@RequestParam("color") String color,@RequestParam("tagId")Long tagId){
+    public ResultDTO updateTagColor(@RequestParam("color") String color, @RequestParam("tagId") Long tagId) {
         return tagService.updateTagColor(color, tagId);
     }
 
     @Action("updateTagName")
     @RequestMapping("/updateTagName")
-    public ResultDTO updateTagName(@RequestParam("tagName") String tagName,@RequestParam("tagId")Long tagId){
+    public ResultDTO updateTagName(@RequestParam("tagName") String tagName, @RequestParam("tagId") Long tagId) {
         return tagService.updateTagName(tagName, tagId);
     }
 

@@ -2,6 +2,7 @@ package com.github.anhTom2000.web.controller;
 
 import com.github.anhTom2000.annotation.Action;
 import com.github.anhTom2000.dto.ResultDTO;
+import com.github.anhTom2000.dto.SortDTO;
 import com.github.anhTom2000.dto.UserDTO;
 import com.github.anhTom2000.service.*;
 import com.github.anhTom2000.utils.httpcode.Httpcode;
@@ -29,7 +30,6 @@ import static com.github.anhTom2000.config.redis.RestTemplateConfig.COOKIE_SEESI
  */
 @RequestMapping("/api")
 @RestController
-@Validated
 public class CommonApiController {
 
     @Qualifier("verifycationService")
@@ -53,6 +53,9 @@ public class CommonApiController {
     @Autowired
     private UserService userService;
 
+    @Qualifier("sortService")
+    @Autowired
+    private SortService sortService;
 
     @RequestMapping("/send/email/checkCode")
     public ResultDTO sendVerification(
@@ -93,5 +96,21 @@ public class CommonApiController {
     public ResultDTO exit(HttpServletRequest request, HttpServletResponse response) {
         cookieService.removeCookie(cookieService.getCookie(COOKIE_SEESION_KEY, request), response);
         return ResultDTO.builder().code(Httpcode.OK_CODE.getCode()).message(null).status(true).build();
+    }
+
+    @Action("geiSort")
+    @RequestMapping("/sort/getSort")
+    public SortDTO getSort(HttpServletRequest request){
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+        long userId = (long) request.getSession().getAttribute(cookie.getValue());
+        return sortService.getSort(userId);
+    }
+
+    @Action("updateSort")
+    @RequestMapping("/sort/updateSort")
+    public SortDTO updateSort(@RequestParam("sortNumber") Integer sortNumber,HttpServletRequest request){
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY,request);
+        Long userId = (Long) request.getSession().getAttribute(cookie.getValue());
+        return sortService.updateSort(sortNumber,userId);
     }
 }

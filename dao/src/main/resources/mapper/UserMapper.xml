@@ -102,4 +102,7 @@
         UPDATE tb_user SET email = #{email} WHERE userid = #{userId};
     </update>
 
+    <update id="updateUsername" useGeneratedKeys="true" >
+        UPDATE tb_user SET username = #{username} WHERE userid = #{userId};
+    </update>
 </mapper>

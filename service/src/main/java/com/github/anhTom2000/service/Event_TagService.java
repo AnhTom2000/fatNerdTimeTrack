@@ -15,4 +15,8 @@ public interface Event_TagService {
     ResultDTO addInMiddle(Long eventId, List<Tag> tagList);
 
     ResultDTO deleteInMiddle(Long tagId);
+
+    void deleteTagInMiddle(Long eventId);
+
+     void deleteOneTag(Long eventId,Long tagId);
 }

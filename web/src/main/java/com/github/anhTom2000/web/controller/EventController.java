@@ -4,17 +4,20 @@ import com.github.anhTom2000.annotation.Action;
 import com.github.anhTom2000.dto.EventDTO;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.entity.Event;
+import com.github.anhTom2000.entity.Tag;
 import com.github.anhTom2000.exceptions.UnLoginException;
 import com.github.anhTom2000.service.CookieService;
 import com.github.anhTom2000.service.EventService;
 import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -41,7 +44,7 @@ public class EventController {
     private CookieService cookieService;
 
     @PostMapping("/addEvent")
-    public EventDTO addEvent(@RequestBody Event event, HttpServletRequest request) {
+    public EventDTO addEvent(@RequestBody @Valid Event event, HttpServletRequest request) {
         EventDTO result = null;
         Long userId = null;
         Cookie cookie = null;
@@ -65,6 +68,12 @@ public class EventController {
     @RequestMapping("/updateEventDescription")
     public ResultDTO updateEventDescription(@RequestParam("eventDescription") String description, @RequestParam("eventId") Long eventId) {
         return eventService.updateDescription(description, eventId);
+    }
+
+    @Action("deleteEventTag")
+    @RequestMapping("/deleteEventOneTag")
+    public ResultDTO deleteEventTag(@RequestParam("eventId") Long eventId, @RequestParam("tagId") Long tagId) {
+        return eventService.deleteEventTag(eventId, tagId);
     }
 
     @Action("updateEventTitle")
@@ -97,5 +106,11 @@ public class EventController {
         return eventService.deleteEvent(eventId);
     }
 
+
+    @RequestMapping("/updateEventTag")
+    @Action("updateEventTag")
+    public ResultDTO updateEventTag(@RequestBody Event event) {
+        return eventService.updateEventTag(event.getTagList(), event.getEventId());
+    }
 
 }

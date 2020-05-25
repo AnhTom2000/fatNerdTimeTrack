@@ -25,11 +25,11 @@ public interface UserMapper {
 
     Integer changePassword(@Param("password") String password, @Param("userId") Long userId);
 
-    Integer updateUserEventFinishedNumber(@Param("userId") Long userId);
+    Integer updateUsername(@Param("username")String username,@Param("userId")Long userId);
 
     Integer updateUserAvator(@Param("avator") String avator, @Param("userId") Long userId);
 
     Integer bind(@Param("phone") String phone, @Param("qq") String qq, @Param("description") String description, @Param("userId") Long userId);
 
-    Integer bindEmail(@Param("email") String email, Long userId);
+    Integer bindEmail(@Param("email") String email,@Param("userId") Long userId);
 }

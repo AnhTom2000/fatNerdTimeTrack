@@ -31,5 +31,6 @@ public interface EventMapper {
 
     Integer updateEventEndTime(@Param("endTime")LocalDateTime endTime,@Param("eventId") Long eventId);
 
+    //Integer updateEventTag(@Param(""))
     void deleteEvent(@Param("eventId") Long eventId);
 }

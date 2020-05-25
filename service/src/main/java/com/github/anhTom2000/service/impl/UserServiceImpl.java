@@ -4,6 +4,7 @@ import com.github.anhTom2000.dao.UserMapper;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.dto.UserDTO;
 import com.github.anhTom2000.entity.User;
+import com.github.anhTom2000.exceptions.NoFoundException;
 import com.github.anhTom2000.service.CookieService;
 import com.github.anhTom2000.service.UserService;
 import com.github.anhTom2000.service.VerifycationService;
@@ -25,10 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Objects;
 
-import static com.github.anhTom2000.config.redis.RestTemplateConfig.*;
+import static com.github.anhTom2000.config.redis.RestTemplateConfig.COOKIE_SEESION_KEY;
+import static com.github.anhTom2000.config.redis.RestTemplateConfig.TimeOut;
 
 /**
  * @Description : TODO   用户服务的实现类
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
         ResultDTO result = null;
         try {
             User user = userMapper.findUserByName(username);
-            if (user == null) throw new NotFoundException("账号不存在");
+            if (user == null) throw new NoFoundException("账号不存在");
             if (Objects.isNull(username) && Objects.isNull(password)) {
                 throw new NullPointerException("账号或密码不能为空");
             }
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
                 response.addCookie(cookie);
                 result = new ResultDTO(Httpcode.OK_CODE.getCode(), "登陆成功", true);
             } else result = new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(), "密码错误", false);
-        } catch (NotFoundException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return result;
@@ -154,6 +155,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         return resultDTO;
+    }
+
+    @Override
+    public ResultDTO updateUsername(String name, Long userId) {
+        return userMapper.updateUsername(name, userId) > 0 ? new ResultDTO(Httpcode.OK_CODE.getCode(),null,true) : new ResultDTO(Httpcode.CLIENT_ERROR_CODE.getCode(),"修改失败",false);
     }
 
     @Override

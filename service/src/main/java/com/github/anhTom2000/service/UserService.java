@@ -27,6 +27,7 @@ public interface UserService {
 
     ResultDTO changePassword(String name,String email,String checkCode,String password);
 
+    ResultDTO updateUsername(String name,Long userId);
 
     ResultDTO findUser(String name);
 

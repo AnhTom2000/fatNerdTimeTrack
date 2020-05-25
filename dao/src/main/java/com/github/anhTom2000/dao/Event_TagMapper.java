@@ -19,4 +19,8 @@ public interface Event_TagMapper {
     Integer insertInMiddle(@Param("eventId") Long eventId,@Param("tagList") List<Tag> tagList);
 
     void deleteEventTag(@Param("tagId") Long tagId);
+
+    void deleteTag(@Param("eventId")Long eventId);
+
+    void deleteOneEventTag(@Param("eventId")Long eventId,@Param("tagId")Long tagId);
 }

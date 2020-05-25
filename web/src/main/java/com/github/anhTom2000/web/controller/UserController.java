@@ -5,13 +5,14 @@ import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.dto.UserDTO;
 import com.github.anhTom2000.service.CookieService;
 import com.github.anhTom2000.service.UserService;
-import com.github.anhTom2000.service.VerifycationService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +22,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import java.util.Arrays;
-
-import static com.github.anhTom2000.config.redis.RestTemplateConfig.*;
+import static com.github.anhTom2000.config.redis.RestTemplateConfig.COOKIE_SEESION_KEY;
 
 /**
  * @Description : TODO
@@ -92,22 +91,15 @@ public class UserController {
     public ResultDTO bind(@RequestParam("bind") String bind, @RequestParam("flag") String flag, HttpServletRequest request) {
         Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request);
         HttpSession session = request.getSession();
-        return  userService.bind(bind, flag, (Long) session.getAttribute(cookie.getValue()));
+        return userService.bind(bind, flag, (Long) session.getAttribute(cookie.getValue()));
     }
 
     @Action("bindEmail")
     @RequestMapping("/bind/bindEmail")
-    public ResultDTO bindEmail(@RequestParam("checkCode") String checkCode, String email, HttpServletRequest request) {
+    public ResultDTO bindEmail(@RequestParam("checkCode") String checkCode, String email, HttpServletRequest request, HttpSession session) {
         Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request);
-        Long userId = null;
-        ResultDTO resultDTO = null;
-        if (cookie != null) {
-            HttpSession session = request.getSession();
-            if ((userId = (Long) session.getAttribute(cookie.getValue())) != null) {
-                resultDTO = userService.bindEmail(checkCode, email, userId);
-            }
-        }
-        return resultDTO;
+        Long userId = (Long) session.getAttribute(cookie.getValue());
+        return userService.bindEmail(checkCode, email, userId);
     }
 
     @PostMapping("/changePassword")
@@ -130,5 +122,12 @@ public class UserController {
         return resultDTO;
     }
 
+    @Action("updateUsername")
+    @RequestMapping("/updateUsername")
+    public ResultDTO updateUsername(@RequestParam("username") @NotBlank(message = "用户名不能为空") String username, HttpServletRequest request) {
+        Cookie cookie = cookieService.getCookie(COOKIE_SEESION_KEY, request);
+        Long userId = (Long) request.getSession().getAttribute(cookie.getValue());
+        return userService.updateUsername(username, userId);
+    }
 
 }

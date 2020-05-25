@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -34,9 +35,11 @@ public class Anniversary implements Serializable {
     Long userId;
 
     @JsonProperty(value = "anniversaryTitle")
+    @NotBlank(message = "纪念日标题不能为空")
     String anniversaryTitle;
 
     @JsonProperty(value = "anniversaryTime")
+    @NotBlank(message = "纪念日日期不能为空")
     String anniversaryTime;
 
     @JsonProperty(value = "anniversaryDescription")

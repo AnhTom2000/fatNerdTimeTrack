@@ -4,6 +4,7 @@ import com.github.anhTom2000.dao.EventMapper;
 import com.github.anhTom2000.dto.EventDTO;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.entity.Event;
+import com.github.anhTom2000.entity.Tag;
 import com.github.anhTom2000.service.EventService;
 import com.github.anhTom2000.service.Event_TagService;
 import com.github.anhTom2000.service.UserService;
@@ -13,6 +14,8 @@ import com.github.anhTom2000.utils.Generator.impl.SnowflakeIdGenerator;
 import com.github.anhTom2000.utils.httpcode.Httpcode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -49,12 +52,12 @@ public class EventServiceImpl implements EventService {
         return eventMapper.addEvent(event) > 0 ? BeanConvertUtil.create(event, EventDTO.class) : null;
     }
 
-
     @Override
     public List<EventDTO> getEvent(Long userId) {
         List<Event> events = eventMapper.findAllEventByUserId(userId);
         return events.size() < 1 ? new ArrayList<EventDTO>() : BeanConvertUtil.convertList(events, EventDTO.class);
     }
+
 
     @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Override
@@ -91,5 +94,24 @@ public class EventServiceImpl implements EventService {
     public ResultDTO deleteEvent(Long eventId) {
         eventMapper.deleteEvent(eventId);
         return new ResultDTO(Httpcode.OK_CODE.getCode(), "修改成功", true);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    @Override
+    public ResultDTO deleteEventTag(Long eventId, Long tagId) {
+        event_tagService.deleteOneTag(eventId, tagId);
+        return new ResultDTO(Httpcode.OK_CODE.getCode(),null,true);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    @Override
+    public ResultDTO updateEventTag(List<Tag> tagList, Long eventId) {
+        // 先将原来的标签删除
+        event_tagService.deleteTagInMiddle(eventId);
+        // 添加新的标签
+        if(tagList!=null)
+        event_tagService.addInMiddle(eventId,tagList);
+
+        return new ResultDTO(Httpcode.OK_CODE.getCode(),null,true);
     }
 }

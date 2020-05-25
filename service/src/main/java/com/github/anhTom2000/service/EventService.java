@@ -3,6 +3,7 @@ package com.github.anhTom2000.service;
 import com.github.anhTom2000.dto.EventDTO;
 import com.github.anhTom2000.dto.ResultDTO;
 import com.github.anhTom2000.entity.Event;
+import com.github.anhTom2000.entity.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,15 +20,19 @@ public interface EventService {
 
     List<EventDTO> getEvent(Long userId);
 
-    ResultDTO updateEventTitle(String eventTitle,Long eventId);
+    ResultDTO updateEventTitle(String eventTitle, Long eventId);
 
-    ResultDTO updateDescription( String description, Long eventId);
+    ResultDTO updateDescription(String description, Long eventId);
 
     ResultDTO updateEventFinished(Long eventId);
 
-    ResultDTO updateEventDate(LocalDateTime date,  Long eventId);
+    ResultDTO updateEventDate(LocalDateTime date, Long eventId);
 
-    ResultDTO updateEventPriority(Integer priorityId ,  Long eventId);
+    ResultDTO updateEventPriority(Integer priorityId, Long eventId);
 
-    ResultDTO deleteEvent( Long eventId);
+    ResultDTO deleteEvent(Long eventId);
+
+    ResultDTO deleteEventTag(Long eventId, Long tagId);
+
+    ResultDTO updateEventTag(List<Tag> tagList, Long eventId);
 }

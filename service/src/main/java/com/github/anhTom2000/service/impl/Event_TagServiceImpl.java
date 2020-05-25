@@ -48,4 +48,15 @@ public class Event_TagServiceImpl implements Event_TagService {
         event_tagMapper.deleteEventTag(tagId);
         return tagService.deleteTag(tagId);
     }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    @Override
+    public void deleteTagInMiddle(Long eventId) {
+        event_tagMapper.deleteTag(eventId);
+    }
+
+    @Override
+    public void deleteOneTag(Long eventId, Long tagId) {
+        event_tagMapper.deleteOneEventTag(eventId, tagId);
+    }
 }
