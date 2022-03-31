@@ -24,7 +24,7 @@
     <!--依赖版本管理-->
     <properties>
         <java.version>11</java.version>
-        <springboot.version>2.2.2.RELEASE</springboot.version>
+        <springboot.version>2.5.12</springboot.version>
         <mybatis.version>2.1.1</mybatis.version>
         <mysql.version>8.0.18</mysql.version>
         <Hikari.version>3.4.2</Hikari.version>
