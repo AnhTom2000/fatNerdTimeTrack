@@ -26,7 +26,7 @@
         <java.version>11</java.version>
         <springboot.version>2.2.2.RELEASE</springboot.version>
         <mybatis.version>2.1.1</mybatis.version>
-        <mysql.version>8.0.18</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <Hikari.version>3.4.2</Hikari.version>
         <lombok.version>1.18.8</lombok.version>
         <modules.version>0.0.1-SNAPSHOT</modules.version>
